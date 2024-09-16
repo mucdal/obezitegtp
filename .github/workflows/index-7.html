@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detaylı Obezite Analiz ve Öneri Sistemi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        input, select, button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fd;
+            border-left: 6px solid #3498db;
+            border-radius: 4px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detaylı Obezite Analiz ve Öneri Sistemi</h1>
+        <div id="form">
+            <h2>Kişisel Bilgiler</h2>
+            <input type="number" id="age" placeholder="Yaşınız">
+            <select id="gender">
+                <option value="">Cinsiyet Seçiniz</option>
+                <option value="male">Erkek</option>
+                <option value="female">Kadın</option>
+            </select>
+            <input type="number" id="weight" placeholder="Kilonuz (kg)">
+            <input type="number" id="height" placeholder="Boyunuz (cm)">
+            
+            <h2>Yaşam Tarzı</h2>
+            <select id="activity">
+                <option value="">Aktivite Düzeyi Seçiniz</option>
+                <option value="sedentary">Hareketsiz</option>
+                <option value="light">Hafif Aktif</option>
+                <option value="moderate">Orta Düzeyde Aktif</option>
+                <option value="very">Çok Aktif</option>
+            </select>
+            <select id="sleep">
+                <option value="">Ortalama Uyku Süresi</option>
+                <option value="less6">6 saatten az</option>
+                <option value="6to8">6-8 saat</option>
+                <option value="more8">8 saatten fazla</option>
+            </select>
+            
+            <h2>Sağlık Durumu</h2>
+            <select id="health" multiple>
+                <option value="diabetes">Diyabet</option>
+                <option value="hypertension">Hipertansiyon</option>
+                <option value="heart">Kalp Hastalığı</option>
+                <option value="cholesterol">Yüksek Kolesterol</option>
+                <option value="thyroid">Tiroid Problemleri</option>
+            </select>
+            
+            <h2>Beslenme Alışkanlıkları</h2>
+            <select id="diet">
+                <option value="">Beslenme Tarzı Seçiniz</option>
+                <option value="regular">Normal</option>
+                <option vegetarian="value">Vejetaryen</option>
+                <option value="vegan">Vegan</option>
+                <option value="keto">Ketojenik</option>
+            </select>
+            <select id="meals">
+                <option value="">Günlük Öğün Sayısı</option>
+                <option value="2">2 veya daha az</option>
+                <option value="3">3</option>
+                <option value="4">4 veya daha fazla</option>
+            </select>
+            
+            <button onclick="analyzeObesity()">Analiz Et ve Öneriler Al</button>
+        </div>
+        <div id="result" class="hidden"></div>
+    </div>
+
+    <script>
+        function analyzeObesity() {
+            // Kullanıcı verilerini al
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value / 100; // cm'yi m'ye çevir
+            const activity = document.getElementById('activity').value;
+            const sleep = document.getElementById('sleep').value;
+            const health = Array.from(document.getElementById('health').selectedOptions).map(option => option.value);
+            const diet = document.getElementById('diet').value;
+            const meals = document.getElementById('meals').value;
+
+            // VKİ hesapla
+            const bmi = weight / (height * height);
+
+            // Analiz ve öneriler
+            let analysis = `<h2>Obezite Analizi ve Öneriler</h2>`;
+            analysis += `<p>Vücut Kitle İndeksiniz (VKİ): ${bmi.toFixed(2)}</p>`;
+
+            // VKİ değerlendirmesi
+            if (bmi < 18.5) {
+                analysis += "<p><strong>Durum:</strong> Zayıf</p>";
+                analysis += "<p><strong>Öneri:</strong> Sağlıklı bir şekilde kilo almanız önerilir. Beslenme uzmanına danışın.</p>";
+            } else if (bmi < 25) {
+                analysis += "<p><strong>Durum:</strong> Normal kilolu</p>";
+                analysis += "<p><strong>Öneri:</strong> Mevcut kilonuzu koruyun ve sağlıklı yaşam alışkanlıklarınızı sürdürün.</p>";
+            } else if (bmi < 30) {
+                analysis += "<p><strong>Durum:</strong> Fazla kilolu</p>";
+                analysis += "<p><strong>Öneri:</strong> Kilo vermeniz önerilir. Düzenli egzersiz yapın ve beslenmenize dikkat edin.</p>";
+            } else if (bmi < 35) {
+                analysis += "<p><strong>Durum:</strong> Obezite (Sınıf I)</p>";
+                analysis += "<p><strong>Öneri:</strong> Kilo vermeniz gerekiyor. Bir doktor veya diyetisyenle görüşün.</p>";
+            } else if (bmi < 40) {
+                analysis += "<p><strong>Durum:</strong> Obezite (Sınıf II)</p>";
+                analysis += "<p><strong>Öneri:</strong> Ciddi sağlık riskleri mevcut. Mutlaka bir sağlık profesyoneliyle görüşün.</p>";
+            } else {
+                analysis += "<p><strong>Durum:</strong> Aşırı Obezite (Sınıf III)</p>";
+                analysis += "<p><strong>Öneri:</strong> Acilen bir obezite kliniğine başvurun.</p>";
+            }
+
+            // Yaş ve cinsiyet analizi
+            if (age > 40) {
+                analysis += "<p>Yaşınız 40'ın üzerinde olduğu için metabolizmanız yavaşlamış olabilir. Bu nedenle kilo kontrolü daha fazla önem kazanmaktadır.</p>";
+            }
+            if (gender === 'female') {
+                analysis += "<p>Kadınlarda hormonal değişiklikler kilo kontrolünü etkileyebilir. Özellikle menopoz döneminde dikkatli olunmalıdır.</p>";
+            }
+
+            // Aktivite düzeyi analizi
+            switch (activity) {
+                case 'sedentary':
+                    analysis += "<p>Hareketsiz bir yaşam tarzınız var. Günlük aktivitenizi artırmanız önemlidir. Günde en az 30 dakika orta yoğunlukta egzersiz yapmayı hedefleyin.</p>";
+                    break;
+                case 'light':
+                    analysis += "<p>Hafif aktif bir yaşam tarzınız var. Aktivite düzeyinizi biraz daha artırmanız faydalı olabilir. Günlük yürüyüşlerinizi uzatmayı veya yeni bir spor dalı denemeyi düşünebilirsiniz.</p>";
+                    break;
+                case 'moderate':
+                    analysis += "<p>Orta düzeyde aktif bir yaşam sürüyorsunuz. Bu iyi bir seviye, ancak daima gelişme alanı vardır. Mevcut rutininize ek olarak kuvvet antrenmanları eklemeyi düşünebilirsiniz.</p>";
+                    break;
+                case 'very':
+                    analysis += "<p>Çok aktif bir yaşam tarzınız var. Bu harika! Şimdi odaklanmanız gereken nokta, bu aktivite seviyesini sürdürülebilir kılmak ve dengeli bir beslenme ile desteklemektir.</p>";
+                    break;
+            }
+
+            // Uyku analizi
+            switch (sleep) {
+                case 'less6':
+                    analysis += "<p>6 saatten az uyuyorsunuz. Yetersiz uyku, kilo kontrolünü zorlaştırabilir ve metabolizmayı yavaşlatabilir. Uyku sürenizi artırmaya çalışın.</p>";
+                    break;
+                case '6to8':
+                    analysis += "<p>6-8 saat uyku optimal aralıktadır. Bu uyku düzenini korumaya devam edin.</p>";
+                    break;
+                case 'more8':
+                    analysis += "<p>8 saatten fazla uyuyorsunuz. Bu bazen gerekli olabilir, ancak aşırı uyku da kilo alımına neden olabilir. Uyku kalitenizi artırmaya odaklanın.</p>";
+                    break;
+            }
+
+            // Sağlık durumu analizi
+            if (health.length > 0) {
+                analysis += "<p><strong>Sağlık Durumu Önerileri:</strong></p><ul>";
+                if (health.includes('diabetes')) {
+                    analysis += "<li>Diyabet: Kan şekerinizi düzenli olarak kontrol edin. Kompleks karbonhidratlar tüketin ve öğün atlamaktan kaçının.</li>";
+                }
+                if (health.includes('hypertension')) {
+                    analysis += "<li>Hipertansiyon: Tuz alımınızı azaltın. Potasyumdan zengin gıdalar tüketin. Stres yönetimi tekniklerini öğrenin.</li>";
+                }
+                if (health.includes('heart')) {
+                    analysis += "<li>Kalp Hastalığı: Omega-3 yağ asitlerinden zengin besinler tüketin. Düzenli kardiyovasküler egzersizler yapın.</li>";
+                }
+                if (health.includes('cholesterol')) {
+                    analysis += "<li>Yüksek Kolesterol: Doymuş yağ alımınızı azaltın. Lifli gıdaları artırın. Düzenli egzersiz yapın.</li>";
+                }
+                if (health.includes('thyroid')) {
+                    analysis += "<li>Tiroid Problemleri: İyot açısından zengin besinler tüketin. Tiroid ilaçlarınızı düzenli kullanın ve doktorunuzla sık kontroller yapın.</li>";
+                }
+                analysis += "</ul>";
+            }
+
+            // Beslenme alışkanlıkları analizi
+            switch (diet) {
+                case 'regular':
+                    analysis += "<p>Normal beslenme tarzınız var. Dengeli bir diyet için tabağınızın yarısını sebzeler, çeyreğini protein kaynakları ve diğer çeyreğini tam tahıllar ile doldurmaya çalışın.</p>";
+                    break;
+                case 'vegetarian':
+                    analysis += "<p>Vejetaryen besleniyorsunuz. Protein alımınıza dikkat edin. Demir, B12 ve çinko gibi besin öğelerini takviye etmeniz gerekebilir.</p>";
+                    break;
+                case 'vegan':
+                    analysis += "<p>Vegan besleniyorsunuz. B12, demir, çinko ve omega-3 takviyesi almanız önerilir. Protein kaynaklarınızı çeşitlendirin.</p>";
+                    break;
+                case 'keto':
+                    analysis += "<p>Ketojenik diyet uyguluyorsunuz. Yeterli lif alımına dikkat edin. Düzenli sağlık kontrolleri yaptırın ve bu diyeti uzun süre uygulamadan önce bir uzmana danışın.</p>";
+                    break;
+            }
+
+            switch (meals) {
+                case '2':
+                    analysis += "<p>Günde 2 veya daha az öğün tüketiyorsunuz. Bu, metabolizmanızı yavaşlatabilir. Daha sık ve küçük öğünler yemeyi deneyin.</p>";
+                    break;
+                case '3':
+                    analysis += "<p>Günde 3 öğün tüketiyorsunuz. Bu iyi bir başlangıç. Ana öğünler arasında sağlıklı atıştırmalıklar eklemeyi düşünebilirsiniz.</p>";
+                    break;
+                case '4':
+                    analysis += "<p>Günde
